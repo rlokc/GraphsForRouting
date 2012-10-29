@@ -6,6 +6,7 @@ import java.util.ArrayList;
  * Date: 29.10.12
  * Time: 10:52
  */
+
 public class Searcher {
 
     private ArrayList<Integer> ways = new ArrayList<Integer>();
@@ -48,7 +49,6 @@ public class Searcher {
     //We're looking for the shortest way here.
     private int matrixCheck(int indexInput) {
         int j = waysMatrix.get(indexInput).get(0);
-
         for (int k = 0; k < numberOfNodes; k++) {
             if (j > waysMatrix.get(indexInput).get(k)) {
                 j = waysMatrix.get(indexInput).get(k);
@@ -57,8 +57,4 @@ public class Searcher {
         return j;
     }
 }
-
-/* private void matrixCheck(int value){
-
-}*/
 
