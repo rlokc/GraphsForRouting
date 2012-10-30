@@ -8,8 +8,6 @@
 public class GraphMain {
 
     public static void main(String[] args) {
-
-        //GraphGenerator generator = new GraphGenerator();
         UndirectedGraph graph = new UndirectedGraph();
         graph = graph.generateGraph();
         Searcher testing = new Searcher(graph.getNodeAmount());

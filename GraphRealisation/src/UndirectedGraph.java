@@ -11,28 +11,47 @@ import java.util.Scanner;
  */
 public class UndirectedGraph {
 
-    private ArrayList<ArrayList<Integer>> weigthList;
+    private ArrayList<ArrayList<Integer>> weightList;
     private Integer nodeAmount;
     private ArrayList<Node> nodes;
-    //**********************************
+
+    /**
+     * Nodes list getter
+     *
+     * @return List of nodes
+     */
     public ArrayList<Node> getNodesList() {
         return nodes;
     }
 
+    /**
+     * Node amount getter
+     *
+     * @return Node amount
+     */
     public Integer getNodeAmount() {
         return nodeAmount;
     }
-    //********************************8
+
+    /**
+     * Node amount setter
+     * @param nodeAmount Node amount to set
+     */
     public void setNodeAmount(Integer nodeAmount) {
         this.nodeAmount = nodeAmount;
     }
 
-
-    public void setWeigthList(ArrayList<ArrayList<Integer>> weigthList) {
-        this.weigthList = weigthList;
+    /**
+     * Weight list setter
+     * @param weightList Weight list to set
+     */
+    public void setWeightList(ArrayList<ArrayList<Integer>> weightList) {
+        this.weightList = weightList;
     }
 
-    //NODES GENERATOR
+    /**
+     * Node generator
+     */
     public void nodeGenerator() {
         nodes = new ArrayList<Node>(nodeAmount);
         Scanner scanner = new Scanner(System.in);
@@ -46,7 +65,7 @@ public class UndirectedGraph {
             for (int j = 0; j < nodeAmount; j++) {              //Looking through links with tmpNodes
                 Node comparableNode = nodes.get(j);
                 if (tmpNode1 != comparableNode) {                 //Checking if not comparing to itself, we don't need this
-                    int tmpWeigth = weigthList.get(i).get(j);
+                    int tmpWeigth = weightList.get(i).get(j);
                     if (tmpWeigth != 0) {
                         Edge tmpEdge = new Edge(tmpNode1, comparableNode, tmpWeigth);    //Adding edges to both nodes
                         tmpNode1.addAdjacency(tmpEdge);
@@ -58,6 +77,10 @@ public class UndirectedGraph {
         }
     }
 
+    /**
+     * Don't know
+     * @return ???
+     */
     public UndirectedGraph generateGraph() {
         Scanner scanner = new Scanner(System.in);
         int nodeAmount = scanner.nextInt();
@@ -71,8 +94,7 @@ public class UndirectedGraph {
             }
             matrix.add(tmp);
         }
-
-        graph.setWeigthList(matrix);
+        graph.setWeightList(matrix);
         graph.setNodeAmount(nodeAmount);
         graph.nodeGenerator();
         scanner.close();
