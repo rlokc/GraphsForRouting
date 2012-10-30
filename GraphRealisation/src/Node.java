@@ -8,7 +8,12 @@ import java.util.ArrayList;
  * To change this template use File | Settings | File Templates.
  */
 public class Node {
+    private String name;
+    private ArrayList<Edge> adjacencies;
 
+    /**
+     * Enumerator for node color (used in search)
+     */
     enum Color {
         nigger,
         white
@@ -16,33 +21,59 @@ public class Node {
 
     private Color color = Color.white;
 
-    public String getNAME() {
-        return NAME;
+    /**
+     * Node name getter
+     *
+     * @return Node name
+     */
+    public String getName() {
+        return name;
     }
 
+    /**
+     * Node color getter
+     *
+     * @return Node color
+     */
     public Color getColor() {
         return color;
     }
 
+    /**
+     * Node color setter
+     *
+     * @param color Enum color to set
+     */
     public void setColor(Color color) {
         this.color = color;
     }
 
-    private String NAME;
-    private ArrayList<Edge> adjacencies;
-
-    public Node(String argName) {
-        NAME = argName;
+    /**
+     * Node constructor
+     *
+     * @param name Node name
+     */
+    public Node(String name) {
+        this.name = name;
         adjacencies = new ArrayList<Edge>();
-        NAME = null;
+        //name = null; //WTF?!
     }
 
+    /**
+     * Setting edge connected with node
+     *
+     * @param tmpEdge Edge to connect with
+     */
     public void addAdjacency(Edge tmpEdge) {
         this.adjacencies.add(tmpEdge);
     }
-    //******************
-    public int getEdgeWeigth(int indexOfEdge){
-        return adjacencies.get(indexOfEdge).getWeigth();
+
+    /**
+     * Getting weight of edge with some index
+     * @param indexOfEdge Index of needed edge
+     * @return Edge weigth
+     */
+    public int getEdgeWeight(int indexOfEdge) {
+        return adjacencies.get(indexOfEdge).getWeight();
     }
-    //******************
 }
