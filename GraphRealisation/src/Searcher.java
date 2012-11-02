@@ -43,7 +43,7 @@ public class Searcher {
         for (int i = 0; i < numberOfNodes; i++) {
             if (i == indexOfFirstNode) {
                 for (int k = 0; k < numberOfNodes - 1; k++) {
-                    int j = inputList.get(indexOfFirstNode).getEdgeWeigth(k);
+                    int j = inputList.get(indexOfFirstNode).getEdgeWeight(k);
                     if (j < waysMatrix.get(i).get(k)) {
                         if (k == numberOfNodes - 2) {
                             System.out.println(" " + j);

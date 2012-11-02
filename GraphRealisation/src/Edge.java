@@ -6,20 +6,28 @@
  * To change this template use File | Settings | File Templates.
  */
 public class Edge {
-
     private Node startNode;
     private Node endNode;
+    private int weight;
 
-    public int getWeigth() {
-        return weigth;
+    /**
+     * Weight getter
+     * @return Weight of edge
+     */
+    public int getWeight() {
+        return weight;
     }
 
-    private int weigth;
-
-    public Edge(Node startNode, Node endNode, int weigth) {
+    /**
+     * Edge constructor
+     * @param startNode Start node for connection
+     * @param endNode End node for connection
+     * @param weight Edge weight
+     */
+    public Edge(Node startNode, Node endNode, int weight) {
         this.startNode = startNode;
         this.endNode = endNode;
-        this.weigth = weigth;
+        this.weight = weight;
     }
 
 }
