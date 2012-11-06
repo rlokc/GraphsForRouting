@@ -71,7 +71,7 @@ public class UndirectedGraph {
                     if (tmpWeigth != 0) {
                         Edge tmpEdge = new Edge(tmpNode1, comparableNode, tmpWeigth);    //Adding edges to both nodes
                         tmpNode1.addAdjacency(tmpEdge);
-                        //Edge compEdge = new Edge(comparableNode, tmpNode1, tmpWeigth);  //That's for double-adding, no time to work on this now.
+                        //Edge compEdge = new Edge(comparableNode, tmpNode1, tmpWeigth);  //TODO: make them add each-other to themselves
                         //comparableNode.addAdjacency(compEdge);
                     }
                 }
