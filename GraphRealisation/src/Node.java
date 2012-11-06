@@ -10,16 +10,8 @@ import java.util.ArrayList;
 public class Node {
     private String name;
     private ArrayList<Edge> adjacencies;
-
-    /**
-     * Enumerator for node color (used in search)
-     */
-    enum Color {
-        nigger,
-        white
-    }
-
-    private Color color = Color.white;
+    private boolean isPassed = false;        //For searchers
+    private int mark = Integer.MAX_VALUE; //For dijkstra search
 
     /**
      * Node name getter
@@ -31,45 +23,40 @@ public class Node {
     }
 
     /**
-     * Node color getter
-     *
-     * @return Node color
-     */
-    public Color getColor() {
-        return color;
-    }
-
-    /**
-     * Node color setter
-     *
-     * @param color Enum color to set
-     */
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
-    /**
      * Node constructor
      *
-     * @param name Node name
+     * @param argName Name of a node, used later to show it
      */
-    public Node(String name) {
-        this.name = name;
+    public Node(String argName) {
+        name = argName;
         adjacencies = new ArrayList<Edge>();
-        //name = null; //WTF?!
+    }
+
+    public ArrayList<Edge> getAdjacencies() {
+        return adjacencies;
     }
 
     /**
      * Setting edge connected with node
      *
-     * @param tmpEdge Edge to connect with
+     * @param tmpEdge Edge, connecting with this node
      */
     public void addAdjacency(Edge tmpEdge) {
         this.adjacencies.add(tmpEdge);
     }
 
+    public int getMark() {
+        return mark;
+    }
+
+    public void setMark(int mark) {
+
+        this.mark = mark;
+    }
+
     /**
      * Getting weight of edge with some index
+     *
      * @param indexOfEdge Index of needed edge
      * @return Edge weigth
      */

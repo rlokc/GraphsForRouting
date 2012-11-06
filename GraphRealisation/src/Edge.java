@@ -19,6 +19,15 @@ public class Edge {
     }
 
     /**
+     * Target node getter
+     * @return endNode
+     */
+
+    public Node getEndNode() {
+            return endNode;
+        }
+
+    /**
      * Edge constructor
      * @param startNode Start node for connection
      * @param endNode End node for connection

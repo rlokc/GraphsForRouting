@@ -35,6 +35,7 @@ public class UndirectedGraph {
 
     /**
      * Node amount setter
+     *
      * @param nodeAmount Node amount to set
      */
     public void setNodeAmount(Integer nodeAmount) {
@@ -43,6 +44,7 @@ public class UndirectedGraph {
 
     /**
      * Weight list setter
+     *
      * @param weightList Weight list to set
      */
     public void setWeightList(ArrayList<ArrayList<Integer>> weightList) {
@@ -69,7 +71,7 @@ public class UndirectedGraph {
                     if (tmpWeigth != 0) {
                         Edge tmpEdge = new Edge(tmpNode1, comparableNode, tmpWeigth);    //Adding edges to both nodes
                         tmpNode1.addAdjacency(tmpEdge);
-                        //Edge compEdge = new Edge(comparableNode, tmpNode1, tmpWeigth);
+                        //Edge compEdge = new Edge(comparableNode, tmpNode1, tmpWeigth);  //That's for double-adding, no time to work on this now.
                         //comparableNode.addAdjacency(compEdge);
                     }
                 }
@@ -79,6 +81,7 @@ public class UndirectedGraph {
 
     /**
      * Don't know
+     *
      * @return ???
      */
     public UndirectedGraph generateGraph() {
@@ -101,6 +104,24 @@ public class UndirectedGraph {
         return graph;
 
     }
+
+//Fuck Stas's searcher, let's do our own!
+
+    void dijkstraSearch(Node startNode, Node targetNode) {
+        //***********THE REALISATION*****************************************
+        for (Edge tmpEdge : startNode.getAdjacencies()) {  //Looking through each connection in the node
+            int tmpWeigth = tmpEdge.getWeight();           //Weight of current edge
+            Node endNode = tmpEdge.getEndNode();           //Ending node of current edge
+            //Getting mark of current node
+            int addingMark = (startNode.getMark() < Integer.MAX_VALUE) ? startNode.getMark() + tmpWeigth : tmpWeigth; //This mark we will compare with the current endnode mark
+            int endNodeMark = endNode.getMark();            //The mark of a current end node
+            if (addingMark < endNodeMark) {
+                endNode.setMark(addingMark);               //Changing endnodemark to adding mark if it was less
+            }
+        }
+        //*******************************************************************
+    }
 }
+
 
 
