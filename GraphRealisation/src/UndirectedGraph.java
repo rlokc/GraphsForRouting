@@ -116,16 +116,20 @@ public class UndirectedGraph {
         Node nextNode = null;                            //Next node we are going to visit
         int nextNodeMark = Integer.MAX_VALUE;
         boolean isFinished = false;
+        boolean isReachedTarget = false;
 
         while (!isFinished) {
             for (Edge tmpEdge : currentNode.getAdjacencies()) {  //Looking through each connection in the node
                 Node endNode = tmpEdge.getEndNode();             //Ending node of current edge
                 if (!endNode.isPassed) {                         //If this node wasn't passed early
-                    int tmpWeigth = tmpEdge.getWeight();           //Weight of current edge
-                    int addingMark = (startNode.getMark() < Integer.MAX_VALUE) ? startNode.getMark() + tmpWeigth : tmpWeigth; //This mark we will compare with the current endnode mark
+                    if (endNode == targetNode) {
+                        isReachedTarget = true;
+                    }
+                    int tmpWeight = tmpEdge.getWeight();           //Weight of current edge
+                    int addingMark = (startNode.getMark() < Integer.MAX_VALUE) ? startNode.getMark() + tmpWeight : tmpWeight; //This mark we will compare with the current endnode mark
                     int endNodeMark = endNode.getMark();            //The mark of a current end node
                     if (addingMark < endNodeMark) {
-                        endNode.setMark(addingMark);               //Changing endnodemark to adding mark if it was less
+                        endNode.setMark(addingMark);               //Changing endnodemark to addingmark if last is less
                     }
                     if (endNode.getMark() < nextNodeMark) {
                         nextNode = endNode;
@@ -136,9 +140,18 @@ public class UndirectedGraph {
             currentNode = nextNode;
             isFinished = true;                                 //Checking if all nodes are out
             for (Node checkNote : this.getNodesList()) {
-                if (!checkNote.isPassed) isFinished = false;
+                if (!checkNote.isPassed) {
+                    isFinished = false;
+                    if (isReachedTarget) {
+                        currentNode = checkNote; //If we reached the "end" of graph, do the search for all the others unvisited nodes
+                    }
+                    break;
+                }
             }
         }
+//DEBUG
+        System.out.println("YOUR BUNNY WROTE: ");
+        System.out.print(targetNode.getMark());
     }
 }
 

@@ -10,7 +10,8 @@ public class GraphMain {
     public static void main(String[] args) {
         UndirectedGraph graph = new UndirectedGraph();
         graph = graph.generateGraph();                         //TODO: Get rid of that DIRTY DIRTY hack
-        Searcher testing = new Searcher(graph.getNodeAmount());
-        testing.doSearch(graph.getNodesList(), 2);
+/*        Searcher testing = new Searcher(graph.getNodeAmount());
+        testing.doSearch(graph.getNodesList(), 2); */
+        graph.dijkstraSearch(graph.getNodesList().get(0),graph.getNodesList().get(3));
     }
 }
