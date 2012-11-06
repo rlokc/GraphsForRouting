@@ -1,3 +1,5 @@
+//Going to deprecate this since it's pretty useless as is
+//Also RECURSION, EVERYONE :3
 import java.util.ArrayList;
 
 /**
