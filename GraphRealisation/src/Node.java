@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class Node {
     private String name;
     private ArrayList<Edge> adjacencies;
-    private boolean isPassed = false;        //For searchers
+    public boolean isPassed = false;        //For searchers
     private int mark = Integer.MAX_VALUE; //For dijkstra search
 
     /**

@@ -106,20 +106,39 @@ public class UndirectedGraph {
     }
 
 //Fuck Stas's searcher, let's do our own!
+//TODO: Currently it doesn't work with "segmented" graphs (some nodes are separated), but who cares really :3
+//TODO: Good idea to check if it actually works, but i don't have any graphs here right now
 
     void dijkstraSearch(Node startNode, Node targetNode) {
-        //***********THE REALISATION*****************************************
-        for (Edge tmpEdge : startNode.getAdjacencies()) {  //Looking through each connection in the node
-            int tmpWeigth = tmpEdge.getWeight();           //Weight of current edge
-            Node endNode = tmpEdge.getEndNode();           //Ending node of current edge
-            //Getting mark of current node
-            int addingMark = (startNode.getMark() < Integer.MAX_VALUE) ? startNode.getMark() + tmpWeigth : tmpWeigth; //This mark we will compare with the current endnode mark
-            int endNodeMark = endNode.getMark();            //The mark of a current end node
-            if (addingMark < endNodeMark) {
-                endNode.setMark(addingMark);               //Changing endnodemark to adding mark if it was less
+        startNode.setMark(0);
+        startNode.isPassed = true;
+        Node currentNode = startNode;
+        Node nextNode = null;                            //Next node we are going to visit
+        int nextNodeMark = Integer.MAX_VALUE;
+        boolean isFinished = false;
+
+        while (!isFinished) {
+            for (Edge tmpEdge : currentNode.getAdjacencies()) {  //Looking through each connection in the node
+                Node endNode = tmpEdge.getEndNode();             //Ending node of current edge
+                if (!endNode.isPassed) {                         //If this node wasn't passed early
+                    int tmpWeigth = tmpEdge.getWeight();           //Weight of current edge
+                    int addingMark = (startNode.getMark() < Integer.MAX_VALUE) ? startNode.getMark() + tmpWeigth : tmpWeigth; //This mark we will compare with the current endnode mark
+                    int endNodeMark = endNode.getMark();            //The mark of a current end node
+                    if (addingMark < endNodeMark) {
+                        endNode.setMark(addingMark);               //Changing endnodemark to adding mark if it was less
+                    }
+                    if (endNode.getMark() < nextNodeMark) {
+                        nextNode = endNode;
+                    }
+                }
+            }
+            currentNode.isPassed = true;                       //Our node is now "red", we don't need to visit it
+            currentNode = nextNode;
+            isFinished = true;                                 //Checking if all nodes are out
+            for (Node checkNote : this.getNodesList()) {
+                if (!checkNote.isPassed) isFinished = false;
             }
         }
-        //*******************************************************************
     }
 }
 
