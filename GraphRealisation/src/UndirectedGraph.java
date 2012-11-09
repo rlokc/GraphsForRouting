@@ -155,7 +155,7 @@ public class UndirectedGraph {
                     }
                 }
             }
-            currentNode.isPassed = true;                       //Our node is now "red", we don't need to visit it
+            currentNode.isPassed = true;                       //Our node is now "out", we don't need to visit it later
             currentNode = nextNode;
             isFinished = true;                                 //Checking if all nodes are out
             for (Node checkNote : this.getNodesList()) {
