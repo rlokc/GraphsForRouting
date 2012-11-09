@@ -14,6 +14,7 @@ public class UndirectedGraph {
     private ArrayList<ArrayList<Integer>> weightList;
     private Integer nodeAmount;
     private ArrayList<Node> nodes;
+    private Scanner scanner = new Scanner(System.in);
 
     /**
      * Nodes list getter
@@ -54,38 +55,18 @@ public class UndirectedGraph {
     /**
      * Node generator
      */
-    public void nodeGenerator() {
-        nodes = new ArrayList<Node>(nodeAmount);
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Write addresses of all networks");
-        for (int i = 0; i < nodeAmount; i++) {                  //Making nodeAmount of nodes
-            Node tmpNode = new Node(scanner.next());
-            nodes.add(tmpNode);
-        }
-        for (int i = 0; i < nodeAmount; i++) {                  //Looking through rows (the nodes)
-            Node tmpNode1 = nodes.get(i);
-            for (int j = 0; j < nodeAmount; j++) {              //Looking through links with tmpNodes
-                Node comparableNode = nodes.get(j);
-                if (tmpNode1 != comparableNode) {                 //Checking if not comparing to itself, we don't need this
-                    int tmpWeigth = weightList.get(i).get(j);
-                    if (tmpWeigth != 0) {
-                        Edge tmpEdge = new Edge(tmpNode1, comparableNode, tmpWeigth);    //Adding edges to both nodes
-                        tmpNode1.addAdjacency(tmpEdge);
-                        //Edge compEdge = new Edge(comparableNode, tmpNode1, tmpWeigth);  //TODO: make them add each-other to themselves
-                        //comparableNode.addAdjacency(compEdge);
-                    }
-                }
-            }
-        }
-    }
+
 
     /**
      * Don't know
      *
      * @return ???
      */
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// GraphGenerator
+//TODO: Make it possible to read all from some file if desired, punching the numbers is quite annoying
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public UndirectedGraph generateGraph() {
-        Scanner scanner = new Scanner(System.in);
         int nodeAmount = scanner.nextInt();
         UndirectedGraph graph = new UndirectedGraph();
         ArrayList<ArrayList<Integer>> matrix = new ArrayList<ArrayList<Integer>>(nodeAmount);
@@ -100,14 +81,41 @@ public class UndirectedGraph {
         graph.setWeightList(matrix);
         graph.setNodeAmount(nodeAmount);
         graph.nodeGenerator();
-        scanner.close();
+//        scanner.close();                                      //Seems to close the whole input, so I'll probably delete it
         return graph;
 
     }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Method for Generating nodes. Part of a GraphGenerator
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        public void nodeGenerator() {
+            nodes = new ArrayList<Node>(nodeAmount);
+            System.out.println("Write addresses of all networks");
+            for (int i = 0; i < nodeAmount; i++) {                  //Making nodeAmount of nodes
+                Node tmpNode = new Node(scanner.next());
+                nodes.add(tmpNode);
+            }
+            for (int i = 0; i < nodeAmount; i++) {                  //Looking through rows (the nodes)
+                Node tmpNode1 = nodes.get(i);
+                for (int j = 0; j < nodeAmount; j++) {              //Looking through links with tmpNodes
+                    Node comparableNode = nodes.get(j);
+                    if (tmpNode1 != comparableNode) {                 //Checking if not comparing to itself, we don't need this
+                        int tmpWeigth = weightList.get(i).get(j);
+                        if (tmpWeigth != 0) {
+                            Edge tmpEdge = new Edge(tmpNode1, comparableNode, tmpWeigth);    //Adding edges to both nodes
+                            tmpNode1.addAdjacency(tmpEdge);
+                        }
+                    }
+                }
+            }
+        }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Fuck Stas's searcher, let's do our own!
+//Dijkstra's Algorithm realisation
 //TODO: Currently it doesn't work with "segmented" graphs (some nodes are separated), but who cares really :3
 //TODO: Good idea to check if it actually works, but i don't have any graphs here right now
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void dijkstraSearch(Node startNode, Node targetNode) {
         startNode.setMark(0);
@@ -149,9 +157,35 @@ public class UndirectedGraph {
                 }
             }
         }
-//DEBUG
+//Debug
         System.out.println("YOUR BUNNY WROTE: ");
         System.out.print(targetNode.getMark());
+    }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Master for running desired algorithms
+//TODO:Make it array-based, would be more extendable this way
+//TODO:Use the bloody nodenames you have! (Though it'll make it all a lil bit slower)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void algorithmMaster(){
+        System.out.println("Write a number of a desired algorithm:");
+        System.out.println("0 for Dijkstra's");
+        int choice = scanner.nextInt();
+        switch(choice){
+            case 0:{                                                               //Dijkstra
+                System.out.println("Write indexes of starting and target nodes:");
+                Node startNode = this.getNodesList().get(scanner.nextInt());
+                Node endNode = this.getNodesList().get(scanner.nextInt());
+                this.dijkstraSearch(startNode,endNode);
+                break;
+            }
+            default:break;
+        }
+    }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//SCANNER CLOSING
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void closeScanner(){
+        scanner.close();
     }
 }
 
