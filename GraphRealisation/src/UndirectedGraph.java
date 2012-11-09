@@ -67,8 +67,10 @@ public class UndirectedGraph {
 //TODO: Make it possible to read all from some file if desired, punching the numbers is quite annoying
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public UndirectedGraph generateGraph() {
+        System.out.println("Write ammount of nodes in graph:");
         int nodeAmount = scanner.nextInt();
         UndirectedGraph graph = new UndirectedGraph();
+        System.out.println("Write matrix:");
         ArrayList<ArrayList<Integer>> matrix = new ArrayList<ArrayList<Integer>>(nodeAmount);
         for (int i = 0; i < nodeAmount; i++) {
             ArrayList<Integer> tmp = new ArrayList<Integer>(nodeAmount);
@@ -134,7 +136,7 @@ public class UndirectedGraph {
                         isReachedTarget = true;
                     }
                     int tmpWeight = tmpEdge.getWeight();           //Weight of current edge
-                    int addingMark = (startNode.getMark() < Integer.MAX_VALUE) ? startNode.getMark() + tmpWeight : tmpWeight; //This mark we will compare with the current endnode mark
+                    int addingMark = startNode.getMark() + tmpWeight; //This mark we will compare with the current endnode mark
                     int endNodeMark = endNode.getMark();            //The mark of a current end node
                     if (addingMark < endNodeMark) {
                         endNode.setMark(addingMark);               //Changing endnodemark to addingmark if last is less
