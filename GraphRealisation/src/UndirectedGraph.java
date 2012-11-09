@@ -14,6 +14,7 @@ public class UndirectedGraph {
     private ArrayList<ArrayList<Integer>> weightList;
     private Integer nodeAmount;
     private ArrayList<Node> nodes;
+//    private Scanner tempScanner = new Scanner(System.in);
     private Scanner scanner = new Scanner(System.in);
 
     /**
@@ -65,8 +66,17 @@ public class UndirectedGraph {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GraphGenerator
 //TODO: Make it possible to read all from some file if desired, punching the numbers is quite annoying
+//TODO: Make exceptions for tempScanner if file does not exist
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public UndirectedGraph generateGraph() {
+/*        System.out.println("Write the file of matrix, if you want to use stdin, write 0");       //TODO: FIX IT!
+        String source = tempScanner.next();
+        if (source == "0"){
+            scanner = tempScanner;
+        } else {
+            scanner = new Scanner(source);
+        }
+*/
         System.out.println("Write ammount of nodes in graph:");
         int nodeAmount = scanner.nextInt();
         UndirectedGraph graph = new UndirectedGraph();
@@ -132,16 +142,14 @@ public class UndirectedGraph {
             for (Edge tmpEdge : currentNode.getAdjacencies()) {  //Looking through each connection in the node
                 Node endNode = tmpEdge.getEndNode();             //Ending node of current edge
                 if (!endNode.isPassed) {                         //If this node wasn't passed early
+                    int comparableMark = currentNode.getMark()+tmpEdge.getWeight();      //currentNode mark + edge weigth
                     if (endNode == targetNode) {
                         isReachedTarget = true;
                     }
-                    int tmpWeight = tmpEdge.getWeight();           //Weight of current edge
-                    int addingMark = startNode.getMark() + tmpWeight; //This mark we will compare with the current endnode mark
-                    int endNodeMark = endNode.getMark();            //The mark of a current end node
-                    if (addingMark < endNodeMark) {
-                        endNode.setMark(addingMark);               //Changing endnodemark to addingmark if last is less
+                    if (comparableMark<endNode.getMark()){                               //Comparing endNode mark to comparableMark
+                        endNode.setMark(comparableMark);                                 //Replacing if new mark is less
                     }
-                    if (endNode.getMark() < nextNodeMark) {
+                    if (comparableMark < nextNodeMark) {
                         nextNode = endNode;
                     }
                 }
