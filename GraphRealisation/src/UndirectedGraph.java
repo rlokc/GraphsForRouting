@@ -134,11 +134,11 @@ public class UndirectedGraph {
         startNode.isPassed = true;
         Node currentNode = startNode;
         Node nextNode = null;                            //Next node we are going to visit
-        int nextNodeMark = Integer.MAX_VALUE;
         boolean isFinished = false;
         boolean isReachedTarget = false;
 
         while (!isFinished) {
+            int nextNodeMark = Integer.MAX_VALUE;
             for (Edge tmpEdge : currentNode.getAdjacencies()) {  //Looking through each connection in the node
                 Node endNode = tmpEdge.getEndNode();             //Ending node of current edge
                 if (!endNode.isPassed) {                         //If this node wasn't passed early
