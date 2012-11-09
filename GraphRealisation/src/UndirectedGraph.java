@@ -151,6 +151,7 @@ public class UndirectedGraph {
                     }
                     if (comparableMark < nextNodeMark) {
                         nextNode = endNode;
+                        nextNodeMark = comparableMark;
                     }
                 }
             }
@@ -161,7 +162,7 @@ public class UndirectedGraph {
                 if (!checkNote.isPassed) {
                     isFinished = false;
                     if (isReachedTarget) {
-                        currentNode = checkNote; //If we reached the "end" of graph, do the search for all the others unvisited nodes
+                        currentNode = checkNote; //If we reached the "end" of graph, do the search for all the other unvisited nodes
                     }
                     break;
                 }
