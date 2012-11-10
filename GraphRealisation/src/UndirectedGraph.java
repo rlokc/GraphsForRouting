@@ -14,7 +14,7 @@ public class UndirectedGraph {
     private ArrayList<ArrayList<Integer>> weightList;
     private Integer nodeAmount;
     private ArrayList<Node> nodes;
-//    private Scanner tempScanner = new Scanner(System.in);
+    //    private Scanner tempScanner = new Scanner(System.in);
     private Scanner scanner = new Scanner(System.in);
 
     /**
@@ -97,30 +97,31 @@ public class UndirectedGraph {
         return graph;
 
     }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Method for Generating nodes. Part of a GraphGenerator
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        public void nodeGenerator() {
-            nodes = new ArrayList<Node>(nodeAmount);
-            System.out.println("Write addresses of all networks");
-            for (int i = 0; i < nodeAmount; i++) {                  //Making nodeAmount of nodes
-                Node tmpNode = new Node(scanner.next());
-                nodes.add(tmpNode);
-            }
-            for (int i = 0; i < nodeAmount; i++) {                  //Looking through rows (the nodes)
-                Node tmpNode1 = nodes.get(i);
-                for (int j = 0; j < nodeAmount; j++) {              //Looking through links with tmpNodes
-                    Node comparableNode = nodes.get(j);
-                    if (tmpNode1 != comparableNode) {                 //Checking if not comparing to itself, we don't need this
-                        int tmpWeigth = weightList.get(i).get(j);
-                        if (tmpWeigth != 0) {
-                            Edge tmpEdge = new Edge(tmpNode1, comparableNode, tmpWeigth);    //Adding edges to both nodes
-                            tmpNode1.addAdjacency(tmpEdge);
-                        }
+    public void nodeGenerator() {
+        nodes = new ArrayList<Node>(nodeAmount);
+        System.out.println("Write addresses of all networks");
+        for (int i = 0; i < nodeAmount; i++) {                  //Making nodeAmount of nodes
+            Node tmpNode = new Node(scanner.next());
+            nodes.add(tmpNode);
+        }
+        for (int i = 0; i < nodeAmount; i++) {                  //Looking through rows (the nodes)
+            Node tmpNode1 = nodes.get(i);
+            for (int j = 0; j < nodeAmount; j++) {              //Looking through links with tmpNodes
+                Node comparableNode = nodes.get(j);
+                if (tmpNode1 != comparableNode) {                 //Checking if not comparing to itself, we don't need this
+                    int tmpWeigth = weightList.get(i).get(j);
+                    if (tmpWeigth != 0) {
+                        Edge tmpEdge = new Edge(tmpNode1, comparableNode, tmpWeigth);    //Adding edges to both nodes
+                        tmpNode1.addAdjacency(tmpEdge);
                     }
                 }
             }
         }
+    }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Fuck Stas's searcher, let's do our own!
@@ -131,6 +132,9 @@ public class UndirectedGraph {
 
     void dijkstraSearch(Node startNode, Node targetNode) {
         startNode.setMark(0);
+        ArrayList<Node> pathToPastNode = new ArrayList<Node>();
+        pathToPastNode.add(startNode);                           //Setting initial path
+        startNode.setPathTo(pathToPastNode);
         startNode.isPassed = true;
         Node currentNode = startNode;
         Node nextNode = null;                            //Next node we are going to visit
@@ -139,15 +143,19 @@ public class UndirectedGraph {
 
         while (!isFinished) {
             int nextNodeMark = Integer.MAX_VALUE;
+            ArrayList<Node> pathTo = new ArrayList<Node>();
+            pathTo.addAll(pathToPastNode);                       //Copying pathToPastNode
             for (Edge tmpEdge : currentNode.getAdjacencies()) {  //Looking through each connection in the node
                 Node endNode = tmpEdge.getEndNode();             //Ending node of current edge
+                pathTo.add(endNode);
                 if (!endNode.isPassed) {                         //If this node wasn't passed early
-                    int comparableMark = currentNode.getMark()+tmpEdge.getWeight();      //currentNode mark + edge weigth
+                    int comparableMark = currentNode.getMark() + tmpEdge.getWeight();      //currentNode mark + edge weigth
                     if (endNode == targetNode) {
                         isReachedTarget = true;
                     }
-                    if (comparableMark<endNode.getMark()){                               //Comparing endNode mark to comparableMark
+                    if (comparableMark < endNode.getMark()) {                               //Comparing endNode mark to comparableMark
                         endNode.setMark(comparableMark);                                 //Replacing if new mark is less
+                        endNode.setPathTo(pathTo);                                       //Changing pathTo
                     }
                     if (comparableMark < nextNodeMark) {
                         nextNode = endNode;
@@ -155,6 +163,7 @@ public class UndirectedGraph {
                     }
                 }
             }
+            pathToPastNode = pathTo;
             currentNode.isPassed = true;                       //Our node is now "out", we don't need to visit it later
             currentNode = nextNode;
             isFinished = true;                                 //Checking if all nodes are out
@@ -163,6 +172,7 @@ public class UndirectedGraph {
                     isFinished = false;
                     if (isReachedTarget) {
                         currentNode = checkNote; //If we reached the "end" of graph, do the search for all the other unvisited nodes
+                        pathToPastNode = currentNode.getPathTo();
                     }
                     break;
                 }
@@ -171,31 +181,44 @@ public class UndirectedGraph {
 //Debug
         System.out.println("YOUR BUNNY WROTE: ");
         System.out.print(targetNode.getMark());
+//Writing path
+        System.out.println();
+        ArrayList<Node> resultPath = targetNode.getPathTo();
+        for (Node pathNode : resultPath){
+            System.out.print(pathNode.getName());
+            if (pathNode != targetNode){
+                System.out.print(" -> ");
+            }
+        }
     }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Master for running desired algorithms
 //TODO:Make it array-based, would be more extendable this way
 //TODO:Use the bloody nodenames you have! (Though it'll make it all a lil bit slower)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public void algorithmMaster(){
+    public void algorithmMaster() {
         System.out.println("Write a number of a desired algorithm:");
         System.out.println("0 for Dijkstra's");
         int choice = scanner.nextInt();
-        switch(choice){
-            case 0:{                                                               //Dijkstra
+        switch (choice) {
+            case 0: {                                                               //Dijkstra
                 System.out.println("Write indexes of starting and target nodes:");
                 Node startNode = this.getNodesList().get(scanner.nextInt());
                 Node endNode = this.getNodesList().get(scanner.nextInt());
-                this.dijkstraSearch(startNode,endNode);
+                this.dijkstraSearch(startNode, endNode);
                 break;
             }
-            default:break;
+            default:
+                break;
         }
     }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //SCANNER CLOSING
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public void closeScanner(){
+    public void closeScanner() {
         scanner.close();
     }
 }
