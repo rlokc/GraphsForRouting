@@ -10,9 +10,7 @@ import java.util.Scanner;
  */
 public class Testsmain {
     public static void main(String[] args){
-        Scanner scanner = new Scanner(System.in);
-        String s = scanner.nextLine();
-        System.out.println(s);
-
+        int answer = (int)(8*30*30*Math.sqrt(784)*(19*19-Math.sqrt(484))*(46*46-Math.sqrt(7396)));
+        System.out.print(answer);
     }
 }

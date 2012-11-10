@@ -143,19 +143,20 @@ public class UndirectedGraph {
 
         while (!isFinished) {
             int nextNodeMark = Integer.MAX_VALUE;
-            ArrayList<Node> pathTo = new ArrayList<Node>();
-            pathTo.addAll(pathToPastNode);                       //Copying pathToPastNode
             for (Edge tmpEdge : currentNode.getAdjacencies()) {  //Looking through each connection in the node
                 Node endNode = tmpEdge.getEndNode();             //Ending node of current edge
-                pathTo.add(endNode);
                 if (!endNode.isPassed) {                         //If this node wasn't passed early
+                    ArrayList<Node> pathTo = new ArrayList<Node>();
+                    pathTo.addAll(pathToPastNode);                       //Copying pathToPastNode
+                    pathTo.add(endNode);
                     int comparableMark = currentNode.getMark() + tmpEdge.getWeight();      //currentNode mark + edge weigth
                     if (endNode == targetNode) {
                         isReachedTarget = true;
                     }
                     if (comparableMark < endNode.getMark()) {                               //Comparing endNode mark to comparableMark
                         endNode.setMark(comparableMark);                                 //Replacing if new mark is less
-                        endNode.setPathTo(pathTo);                                       //Changing pathTo
+                        endNode.setPathTo(pathTo);
+                        pathToPastNode = pathTo;                                         //Changing pathTo
                     }
                     if (comparableMark < nextNodeMark) {
                         nextNode = endNode;
@@ -163,7 +164,6 @@ public class UndirectedGraph {
                     }
                 }
             }
-            pathToPastNode = pathTo;
             currentNode.isPassed = true;                       //Our node is now "out", we don't need to visit it later
             currentNode = nextNode;
             isFinished = true;                                 //Checking if all nodes are out
@@ -184,9 +184,9 @@ public class UndirectedGraph {
 //Writing path
         System.out.println();
         ArrayList<Node> resultPath = targetNode.getPathTo();
-        for (Node pathNode : resultPath){
+        for (Node pathNode : resultPath) {
             System.out.print(pathNode.getName());
-            if (pathNode != targetNode){
+            if (pathNode != targetNode) {
                 System.out.print(" -> ");
             }
         }
