@@ -6,7 +6,6 @@ import java.util.Scanner;
  * User: rlokc
  * Date: 27.10.12
  * Time: 11:53
- * Реализация ненаправленого графа. Граф хранится в матрице смежности, где на пересечениях указан их вес.
  * To change this template use File | Settings | File Templates.
  */
 public class UndirectedGraph {
@@ -192,6 +191,41 @@ public class UndirectedGraph {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Recursive Dijkstra. That one should work.
+//Two steps - main and recursive parts. This is main.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    void dijkstraMain(Node startNode, Node targetNode) {
+        startNode.setMark(0);
+        dijkstra(startNode);
+        //Debug
+        System.out.println("YOUR BUNNY WROTE: ");
+        System.out.print(targetNode.getMark());
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Recursive Dijkstra. Recursive part.
+//TODO: Path trace. When will I finally make it?
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    void dijkstra(Node currentNode) {
+        ArrayList<Node> neighbors = new ArrayList<Node>();
+        for (Edge edge : currentNode.getAdjacencies()) {     //Looking through each adjacent node
+            Node endNode = edge.getEndNode();
+            if (!endNode.isPassed) {
+                neighbors.add(endNode);                      //Adding the node to next nodes to view
+                int comparableMark = currentNode.getMark() + edge.getWeight();  //Mark we are going to assign
+                if (comparableMark < endNode.getMark()) {                //if it's less than mark of nextNode
+                    endNode.setMark(comparableMark);
+                }
+            }
+        }
+        currentNode.isPassed = true;
+        if (neighbors.size() != 0) {
+            for (Node nextNode : neighbors) {
+                dijkstra(nextNode);
+            }
+        }
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Master for running desired algorithms
@@ -203,11 +237,11 @@ public class UndirectedGraph {
         System.out.println("0 for Dijkstra's");
         int choice = scanner.nextInt();
         switch (choice) {
-            case 0: {                                                               //Dijkstra
+            case 0: {  //Dijkstra
                 System.out.println("Write indexes of starting and target nodes:");
                 Node startNode = this.getNodesList().get(scanner.nextInt());
                 Node endNode = this.getNodesList().get(scanner.nextInt());
-                this.dijkstraSearch(startNode, endNode);
+                this.dijkstraMain(startNode, endNode);
                 break;
             }
             default:
