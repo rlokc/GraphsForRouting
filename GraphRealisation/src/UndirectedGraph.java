@@ -206,6 +206,8 @@ public class UndirectedGraph {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Recursive Dijkstra. Recursive part.
 //TODO: Path trace. When will I finally make it?
+//TODO: Multilayered recursion doesn't seem to work. Make it "fall back" to parent node, if no possible neighboors.
+//TODO: For upper todo there's got to be another recursion, omg.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     void dijkstra(Node currentNode) {
         ArrayList<Node> neighbors = new ArrayList<Node>();
