@@ -129,51 +129,40 @@ public class UndirectedGraph {
 //TODO: Good idea to check if it actually works, but i don't have any graphs here right now
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void dijkstraSearch(Node startNode, Node targetNode) {
+    void dijkstraMain(Node startNode, Node targetNode) {
         startNode.setMark(0);
         ArrayList<Node> pathToPastNode = new ArrayList<Node>();
         pathToPastNode.add(startNode);                           //Setting initial path
         startNode.setPathTo(pathToPastNode);
         startNode.isPassed = true;
         Node currentNode = startNode;
-        Node nextNode = null;                            //Next node we are going to visit
         boolean isFinished = false;
-        boolean isReachedTarget = false;
 
         while (!isFinished) {
-            int nextNodeMark = Integer.MAX_VALUE;
-            for (Edge tmpEdge : currentNode.getAdjacencies()) {  //Looking through each connection in the node
-                Node endNode = tmpEdge.getEndNode();             //Ending node of current edge
-                if (!endNode.isPassed) {                         //If this node wasn't passed early
+            for (Edge tmpEdge : currentNode.getAdjacencies()) {
+                Node endNode = tmpEdge.getEndNode();
+                if (!endNode.isPassed) {
                     ArrayList<Node> pathTo = new ArrayList<Node>();
                     pathTo.addAll(pathToPastNode);                       //Copying pathToPastNode
                     pathTo.add(endNode);
-                    int comparableMark = currentNode.getMark() + tmpEdge.getWeight();      //currentNode mark + edge weigth
-                    if (endNode == targetNode) {
-                        isReachedTarget = true;
-                    }
-                    if (comparableMark < endNode.getMark()) {                               //Comparing endNode mark to comparableMark
+                    int comparableMark = currentNode.getMark() + tmpEdge.getWeight();
+                    if (comparableMark < endNode.getMark()) {
                         endNode.setMark(comparableMark);                                 //Replacing if new mark is less
                         endNode.setPathTo(pathTo);
                         pathToPastNode = pathTo;                                         //Changing pathTo
                     }
-                    if (comparableMark < nextNodeMark) {
-                        nextNode = endNode;
-                        nextNodeMark = comparableMark;
-                    }
                 }
             }
             currentNode.isPassed = true;                       //Our node is now "out", we don't need to visit it later
-            currentNode = nextNode;
+            int nextNodeMark = Integer.MAX_VALUE;
             isFinished = true;                                 //Checking if all nodes are out
-            for (Node checkNote : this.getNodesList()) {
-                if (!checkNote.isPassed) {
+            for (Node checkNode : this.nodes) {
+                if (!checkNode.isPassed) {
                     isFinished = false;
-                    if (isReachedTarget) {
-                        currentNode = checkNote; //If we reached the "end" of graph, do the search for all the other unvisited nodes
-                        pathToPastNode = currentNode.getPathTo();
+                    if (checkNode.getMark()<nextNodeMark){    //Checking if the node has the least mark while also not being passed
+                        currentNode = checkNode;
+                        nextNodeMark = checkNode.getMark();
                     }
-                    break;
                 }
             }
         }
@@ -181,52 +170,14 @@ public class UndirectedGraph {
         System.out.println("YOUR BUNNY WROTE: ");
         System.out.print(targetNode.getMark());
 //Writing path
-        System.out.println();
+/*        System.out.println();
         ArrayList<Node> resultPath = targetNode.getPathTo();
         for (Node pathNode : resultPath) {
             System.out.print(pathNode.getName());
             if (pathNode != targetNode) {
                 System.out.print(" -> ");
             }
-        }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Recursive Dijkstra. That one should work.
-//Two steps - main and recursive parts. This is main.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void dijkstraMain(Node startNode, Node targetNode) {
-        startNode.setMark(0);
-        dijkstra(startNode);
-        //Debug
-        System.out.println("YOUR BUNNY WROTE: ");
-        System.out.print(targetNode.getMark());
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Recursive Dijkstra. Recursive part.
-//TODO: Path trace. When will I finally make it?
-//TODO: Multilayered recursion doesn't seem to work. Make it "fall back" to parent node, if no possible neighboors.
-//TODO: For upper todo there's got to be another recursion, omg.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void dijkstra(Node currentNode) {
-        ArrayList<Node> neighbors = new ArrayList<Node>();
-        for (Edge edge : currentNode.getAdjacencies()) {     //Looking through each adjacent node
-            Node endNode = edge.getEndNode();
-            if (!endNode.isPassed) {
-                neighbors.add(endNode);                      //Adding the node to next nodes to view
-                int comparableMark = currentNode.getMark() + edge.getWeight();  //Mark we are going to assign
-                if (comparableMark < endNode.getMark()) {                //if it's less than mark of nextNode
-                    endNode.setMark(comparableMark);
-                }
-            }
-        }
-        currentNode.isPassed = true;
-        if (neighbors.size() != 0) {
-            for (Node nextNode : neighbors) {
-                dijkstra(nextNode);
-            }
-        }
+        }                                                      */
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
