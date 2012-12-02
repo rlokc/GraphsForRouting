@@ -5,8 +5,8 @@ import java.util.ArrayList;
  * User: rlokc
  * Date: 27.10.12
  * Time: 11:58
- * To change this template use File | Settings | File Templates.
  */
+
 public class Node {
     private String name;
     private ArrayList<Edge> adjacencies;
@@ -61,15 +61,5 @@ public class Node {
     public void setMark(int mark) {
 
         this.mark = mark;
-    }
-
-    /**
-     * Getting weight of edge with some index
-     *
-     * @param indexOfEdge Index of needed edge
-     * @return Edge weigth
-     */
-    public int getEdgeWeight(int indexOfEdge) {
-        return adjacencies.get(indexOfEdge).getWeight();
     }
 }
