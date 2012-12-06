@@ -89,14 +89,12 @@ public class UndirectedGraph {
     /**
      * Base method for Dijkstra methods of graph realisation realisarion
      * @param startNode node as a start point of route
-     * @param targetNode node as destination point (suddenly!)
      */
-    private void dijkstraMain(Node startNode, Node targetNode) {
+    private void dijkstraMain(Node startNode) {
         startNode.setMark(0);
         ArrayList<Node> pathTo = new ArrayList<Node>();
         //Setting initial path
-        pathTo.add(startNode);
-        startNode.setPathTo(pathTo);
+        pathRefresh(pathTo, startNode);
         startNode.isPassed = true;
         Node currentNode = startNode;
         boolean isFinished = false;
@@ -105,19 +103,13 @@ public class UndirectedGraph {
             for (Edge tmpEdge : currentNode.getAdjacencies()) {
                 Node endNode = tmpEdge.getEndNode();
                 if (!endNode.isPassed) {
-                    //Copying pathTo.
-                    ArrayList<Node> pathToEndNode = new ArrayList<Node>();
-                    for (Node tmpNode : currentNode.getPathTo()){
-                        pathToEndNode.add(tmpNode);
-                    }
-                    pathToEndNode.add(endNode);
                     //Calculating mark
                     int comparableMark = currentNode.getMark() + tmpEdge.getWeight();
                     if (comparableMark < endNode.getMark()) {
                         //Replacing if new mark is less
                         endNode.setMark(comparableMark);
                         //Changing pathTo
-                        endNode.setPathTo(pathToEndNode);
+                        pathRefresh(currentNode.getPathTo(),endNode);
                     }
                 }
             }
@@ -138,6 +130,25 @@ public class UndirectedGraph {
                 }
             }
         }
+    }
+
+//BELLMAN-FORD ALGORITHM
+    void bellmanFordSearch(Node startNode){
+
+    }
+//Refreshing PathTo
+    void pathRefresh(ArrayList<Node> pathTo, Node node){
+        //Copying previous node's path
+        ArrayList<Node> resultPath = new ArrayList<Node>();
+        for (Node tmpNode : pathTo){
+            resultPath.add(tmpNode);
+        }
+        //Adding our node to it
+        if (!pathTo.contains(node)) resultPath.add(node);
+        node.setPathTo(resultPath);
+    }
+
+    void pathWrite(Node targetNode){
 //Debug
         System.out.println("YOUR BUNNY WROTE: ");
         System.out.print(targetNode.getMark());
@@ -157,7 +168,7 @@ public class UndirectedGraph {
 //TODO:Make it array-based, would be more extendable this way
 //TODO:Use the bloody nodenames you have! (Though it'll make it all a lil bit slower)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public void algorithmMaster() {
+    void algorithmMaster() {
         System.out.println("Write a number of a desired algorithm:");
         System.out.println("0 for Dijkstra's");
         int choice = scanner.nextInt();
@@ -168,7 +179,8 @@ public class UndirectedGraph {
                 System.out.println("Write indexes of starting and target nodes:");
                 Node startNode = this.nodes.get(scanner.nextInt());
                 Node endNode = this.nodes.get(scanner.nextInt());
-                dijkstraMain(startNode, endNode);
+                dijkstraMain(startNode);
+                pathWrite(endNode);
                 break;
             }
             default:
