@@ -11,7 +11,7 @@ public class Node {
     private String name;
     private ArrayList<Edge> adjacencies;
     public boolean isPassed = false;        //For searchers
-    private int mark = Integer.MAX_VALUE; //For dijkstra search
+    private int mark = Integer.MAX_VALUE;
     private ArrayList<Node> pathTo = null;
 
     public ArrayList<Node> getPathTo() {

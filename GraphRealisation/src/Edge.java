@@ -6,6 +6,10 @@
  */
 
 public class Edge {
+    public Node getStartNode() {
+        return startNode;
+    }
+
     private Node startNode;
     private Node endNode;
     private int weight;

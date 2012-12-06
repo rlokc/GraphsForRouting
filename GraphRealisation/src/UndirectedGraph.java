@@ -15,6 +15,7 @@ public class UndirectedGraph {
     private ArrayList<ArrayList<Integer>> weightList;
     private Integer nodeAmount;
     private ArrayList<Node> nodes;
+    private ArrayList<Edge> edges = new ArrayList<Edge>();
     private Scanner scanner;
 
     /**
@@ -74,6 +75,7 @@ public class UndirectedGraph {
                     if (tmpWeigth != -1) {
                         Edge tmpEdge = new Edge(tmpNode1, comparableNode, tmpWeigth);    //Adding edges to both nodes
                         tmpNode1.addAdjacency(tmpEdge);
+                        edges.add(tmpEdge);
                     }
                 }
             }
@@ -87,7 +89,7 @@ public class UndirectedGraph {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Base method for Dijkstra methods of graph realisation realisarion
+     * Base method for Dijkstra methods of graph realisation realisation
      * @param startNode node as a start point of route
      */
     private void dijkstraMain(Node startNode) {
@@ -134,6 +136,22 @@ public class UndirectedGraph {
 
 //BELLMAN-FORD ALGORITHM
     void bellmanFordSearch(Node startNode){
+        startNode.setMark(0);
+        ArrayList<Node> pathTo = new ArrayList<Node>();
+        //Setting initial path
+        pathRefresh(pathTo, startNode);
+        for (Edge edge : edges){                    //You shouldn't visit edges one, it should be more 'smart'
+            Node firstNode = edge.getStartNode();
+            if (firstNode.getMark() != Integer.MAX_VALUE){
+                Node adjNode = edge.getEndNode();
+                int adjMark = adjNode.getMark();
+                int compMark = firstNode.getMark()+edge.getWeight();
+                if (adjMark<compMark){
+                    adjNode.setMark(compMark);
+                    pathRefresh(firstNode.getPathTo(),adjNode);
+                }
+            }
+        }
 
     }
 //Refreshing PathTo
@@ -170,7 +188,7 @@ public class UndirectedGraph {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     void algorithmMaster() {
         System.out.println("Write a number of a desired algorithm:");
-        System.out.println("0 for Dijkstra's");
+        System.out.println("0 for Dijkstra's\n1 for Bellman-Ford");
         int choice = scanner.nextInt();
         //Debug
         System.out.println(choice);
@@ -183,6 +201,13 @@ public class UndirectedGraph {
                 pathWrite(endNode);
                 break;
             }
+            case 1:  //Bellman-Ford
+                System.out.println("Write indexes of starting and target nodes:");
+                Node startNode = this.nodes.get(scanner.nextInt());
+                Node endNode = this.nodes.get(scanner.nextInt());
+                bellmanFordSearch(startNode);
+                pathWrite(endNode);
+                break;
             default:
                 break;
         }
