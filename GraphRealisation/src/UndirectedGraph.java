@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.lang.Math;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,6 +11,9 @@ import java.util.Scanner;
  * Time: 11:53
  */
 
+/**
+ * Graph as a whole thing.
+ */
 public class UndirectedGraph {
 
     private ArrayList<ArrayList<Integer>> weightList;
@@ -19,14 +23,11 @@ public class UndirectedGraph {
     private Scanner scanner;
 
     /**
-     * Interlayer which takes input and generates <code>weightList</code> and reers to <code>nodeGenerator</code>
+     * Interlayer which takes input and generates global matrix <code>weightList</code>.
+     * It also calls to <code>nodeGenerator</code>.
+     *
      * @throws FileNotFoundException
      */
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// GraphGenerator
-//TODO: Make it possible to read all from some file if desired, punching the numbers is quite annoying
-//TODO: Make exceptions for tempScanner if file does not exist
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void generateGraph() throws FileNotFoundException {
 
         scannerRun();          //Running the scanner choose
@@ -52,12 +53,14 @@ public class UndirectedGraph {
         }
         this.weightList = matrix;
         this.nodeGenerator();
-
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Method for Generating nodes. Part of a GraphGenerator
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * This method is used to generate nodes according to user input. Called in <code>GraphGenerator</code> only.
+     * Edge creation is also realised here.
+     *
+     * @throws FileNotFoundException
+     */
     public void nodeGenerator() throws FileNotFoundException {
         nodes = new ArrayList<Node>(nodeAmount);
         System.out.print("Write addresses of all networks");
@@ -82,14 +85,9 @@ public class UndirectedGraph {
         }
     }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Dijkstra's Algorithm realisation
-//TODO: Currently it doesn't work with "segmented" graphs (some nodes are separated), but who cares really :3
-//TODO: Good idea to check if it actually works, but i don't have any graphs here right now
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     /**
-     * Base method for Dijkstra methods of graph realisation realisation
+     * Base method for Dijkstra's methods of graph routing.
+     *
      * @param startNode node as a start point of route
      */
     private void dijkstraMain(Node startNode) {
@@ -111,7 +109,7 @@ public class UndirectedGraph {
                         //Replacing if new mark is less
                         endNode.setMark(comparableMark);
                         //Changing pathTo
-                        pathRefresh(currentNode.getPathTo(),endNode);
+                        pathRefresh(currentNode.getPathTo(), endNode);
                     }
                 }
             }
@@ -134,59 +132,87 @@ public class UndirectedGraph {
         }
     }
 
-//BELLMAN-FORD ALGORITHM
-    void bellmanFordSearch(Node startNode){
+    /**
+     * Base method for Bellman-Ford's methods of search in graph.
+     *
+     * @param startNode node as a start point of route
+     */
+    void bellmanFordSearch(Node startNode) {
         startNode.setMark(0);
         ArrayList<Node> pathTo = new ArrayList<Node>();
         //Setting initial path
         pathRefresh(pathTo, startNode);
-        for (Edge edge : edges){                    //You shouldn't visit edges one, it should be more 'smart'
+        //Take 2
+        /*for (int i = 0; i < nodeAmount; i++) {
+            for (int j = 0; j < nodeAmount; j++) {
+                Node aNode = nodes.get(i);
+                for(Edge edge:aNode.getAdjacencies()){
+                    Node bNode = edge.getEndNode();
+                    bNode.setMark(Math.min(bNode.getMark(),aNode.getMark()+edge.getWeight()));
+                }
+            }
+        }*/
+        //Take 3
+        for (int i=0; i < nodeAmount-1; i++){
+            for(Edge edge: edges){
+                Node aMark = edge.getStartNode();
+                Node bMark = edge.getEndNode();
+                bMark.setMark(Math.min(bMark.getMark(),aMark.getMark()+edge.getWeight()));
+            }
+        }
+        /*for (Edge edge : edges) {                    //You shouldn't visit edges one, it should be more 'smart'
             Node firstNode = edge.getStartNode();
-            if (firstNode.getMark() != Integer.MAX_VALUE){
+            if (firstNode.getMark() != Integer.MAX_VALUE) {
                 Node adjNode = edge.getEndNode();
                 int adjMark = adjNode.getMark();
-                int compMark = firstNode.getMark()+edge.getWeight();
-                if (adjMark<compMark){
+                int compMark = firstNode.getMark() + edge.getWeight();
+                if (adjMark < compMark) {
                     adjNode.setMark(compMark);
-                    pathRefresh(firstNode.getPathTo(),adjNode);
+                    pathRefresh(firstNode.getPathTo(), adjNode);
                 }
             }
         }
-
+        */
     }
 //Refreshing PathTo
-    void pathRefresh(ArrayList<Node> pathTo, Node node){
+
+    /**
+     * Service method for search algorithms.
+     * We use it to change an old path to the specified node to some new. To shorter one, in most cases.
+     *
+     * @param pathTo path that we are going to write as node parameters
+     * @param node   node we're changing path to
+     */
+    void pathRefresh(ArrayList<Node> pathTo, Node node) {
         //Copying previous node's path
-        ArrayList<Node> resultPath = new ArrayList<Node>();
-        for (Node tmpNode : pathTo){
-            resultPath.add(tmpNode);
-        }
+        ArrayList<Node> resultPath = (ArrayList<Node>) pathTo.clone();
         //Adding our node to it
         if (!pathTo.contains(node)) resultPath.add(node);
         node.setPathTo(resultPath);
     }
 
-    void pathWrite(Node targetNode){
+    void pathWrite(Node targetNode) {
 //Debug
         System.out.println("YOUR BUNNY WROTE: ");
         System.out.print(targetNode.getMark());
 //Writing path
-        System.out.println();
+/*        System.out.println();
         ArrayList<Node> resultPath = targetNode.getPathTo();
         for (Node pathNode : resultPath) {
             System.out.print(pathNode.getName());
             if (pathNode != targetNode) {
                 System.out.print(" -> ");
             }
-        }
+        }                                       */
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Master for running desired algorithms
-//TODO:Make it array-based, would be more extendable this way
-//TODO:Use the bloody nodenames you have! (Though it'll make it all a lil bit slower)
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Master for running desired algorithms.
+     */
+    //TODO:Make it array-based, would be more extendable this way
+    //TODO:Use the bloody nodenames you have! (Though it'll make it all a lil bit slower)
     void algorithmMaster() {
+
         System.out.println("Write a number of a desired algorithm:");
         System.out.println("0 for Dijkstra's\n1 for Bellman-Ford");
         int choice = scanner.nextInt();
@@ -210,16 +236,22 @@ public class UndirectedGraph {
                 break;
             default:
                 break;
+
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//SCANNER CLOSING
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Guess what! It's just closing one little thread.
+     */
     public void closeScanner() {
         scanner.close();
     }
 
+    /**
+     * Asks user to input some path to input file and gives that to <code>scanner</code>.
+     *
+     * @throws FileNotFoundException
+     */
     public void scannerRun() throws FileNotFoundException {
         scanner = new Scanner(System.in);
         System.out.println("0 for console read \nor path for file read: ");
