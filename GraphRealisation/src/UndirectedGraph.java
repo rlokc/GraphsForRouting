@@ -9,6 +9,7 @@ import java.lang.Math;
  * User: rlokc
  * Date: 27.10.12
  * Time: 11:53
+ * OHMYGOD MY CODE IS HOWWWWWWWWWWWWWWIBLE
  */
 
 /**
@@ -142,37 +143,21 @@ public class UndirectedGraph {
         ArrayList<Node> pathTo = new ArrayList<Node>();
         //Setting initial path
         pathRefresh(pathTo, startNode);
-        //Take 2
-        /*for (int i = 0; i < nodeAmount; i++) {
-            for (int j = 0; j < nodeAmount; j++) {
-                Node aNode = nodes.get(i);
-                for(Edge edge:aNode.getAdjacencies()){
-                    Node bNode = edge.getEndNode();
-                    bNode.setMark(Math.min(bNode.getMark(),aNode.getMark()+edge.getWeight()));
-                }
-            }
-        }*/
-        //Take 3
-        for (int i=0; i < nodeAmount-1; i++){
-            for(Edge edge: edges){
-                Node aMark = edge.getStartNode();
-                Node bMark = edge.getEndNode();
-                bMark.setMark(Math.min(bMark.getMark(),aMark.getMark()+edge.getWeight()));
-            }
-        }
-        /*for (Edge edge : edges) {                    //You shouldn't visit edges one, it should be more 'smart'
-            Node firstNode = edge.getStartNode();
-            if (firstNode.getMark() != Integer.MAX_VALUE) {
-                Node adjNode = edge.getEndNode();
-                int adjMark = adjNode.getMark();
-                int compMark = firstNode.getMark() + edge.getWeight();
-                if (adjMark < compMark) {
-                    adjNode.setMark(compMark);
-                    pathRefresh(firstNode.getPathTo(), adjNode);
+        for (int i = 0; i < nodeAmount - 1; i++) {
+            for (Edge edge : edges) {
+                Node aNode = edge.getStartNode();
+                Node bNode = edge.getEndNode();
+                if (aNode.getMark() < Integer.MAX_VALUE) {
+                    int bMark = aNode.getMark() + edge.getWeight();
+                    if (bMark < bNode.getMark()) {
+                        //Replacing if new mark is less
+                        bNode.setMark(bMark);
+                        //Changing pathTo
+                        pathRefresh(aNode.getPathTo(), bNode);
+                    }
                 }
             }
         }
-        */
     }
 //Refreshing PathTo
 
@@ -196,14 +181,14 @@ public class UndirectedGraph {
         System.out.println("YOUR BUNNY WROTE: ");
         System.out.print(targetNode.getMark());
 //Writing path
-/*        System.out.println();
+       System.out.println();
         ArrayList<Node> resultPath = targetNode.getPathTo();
         for (Node pathNode : resultPath) {
             System.out.print(pathNode.getName());
             if (pathNode != targetNode) {
                 System.out.print(" -> ");
             }
-        }                                       */
+        }
     }
 
     /**
