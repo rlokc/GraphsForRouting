@@ -104,24 +104,23 @@ public class Graph {
      *
      * @param startNode node as a start point of route
      */
-    private void dijkstraMain(Node startNode) {
-        startNode.setMark(0);
+    private void dijkstraSearch(Node currentNode, Node endNode) {
+        currentNode.setMark(0);
         ArrayList<Node> pathTo = new ArrayList<Node>();
         //Setting initial path
-        pathRefresh(pathTo, startNode);
-        startNode.isPassed = true;
-        Node currentNode = startNode;
+        pathRefresh(pathTo, currentNode);
+        currentNode.isPassed = true;
         boolean isFinished = false;
 
         while (!isFinished) {
             for (Edge tmpEdge : currentNode.getAdjacencies()) {
-                Node endNode = tmpEdge.getEndNode();
-                if (!endNode.isPassed) {
+                Node targetNode = tmpEdge.getEndNode();
+                if (!targetNode.isPassed) {
                     //Calculating mark
                     int comparableMark = currentNode.getMark() + tmpEdge.getWeight();
-                    if (comparableMark < endNode.getMark()) {
+                    if (comparableMark < targetNode.getMark()) {
                         //Replacing if new mark is less
-                        endNode.setMark(comparableMark);
+                        targetNode.setMark(comparableMark);
                         //Changing pathTo
                         pathRefresh(currentNode.getPathTo(), endNode);
                     }
@@ -144,6 +143,7 @@ public class Graph {
                 }
             }
         }
+        pathWrite(endNode);
     }
 
     /**
@@ -151,7 +151,7 @@ public class Graph {
      *
      * @param startNode node as a start point of route
      */
-    void bellmanFordSearch(Node startNode) {
+    void bellman_FordSearch(Node startNode, Node endNode) {
         startNode.setMark(0);
         ArrayList<Node> pathTo = new ArrayList<Node>();
         //Setting initial path
@@ -171,6 +171,7 @@ public class Graph {
                 }
             }
         }
+        pathWrite(endNode);
     }
 
     void floyd_WarshallSearch(int startNodeIndex, int endNodeIndex) {
@@ -186,7 +187,7 @@ public class Graph {
                     //Copying weight from weightlist, if there IS an edge between the nodes
                     tmp.add(weightList.get(i).get(j));
                 //Filling stepMatrix with zeroes
-                steptmp.add(-1);
+                steptmp.add(0);
             }
             pathMatrix.add(tmp);
             stepMatrix.add(steptmp);
@@ -229,13 +230,14 @@ public class Graph {
     }
 //Recovering paths from the matrix after Floyd-Warshall
     String WarshallPathRecovery (int i,int j){
+        int k = stepMatrix.get(i).get(j);
         if (pathMatrix.get(i).get(j)==-1)
             return "No path";
-        int k = stepMatrix.get(i).get(j);
-        if (k==-1)
-            return " ";
+        if (i==j){
+            return nodes.get(i).getName();
+        }
         else
-            return WarshallPathRecovery(i,k)+nodes.get(k).getName()+WarshallPathRecovery(k,j);
+            return WarshallPathRecovery(i,k)+nodes.get(j).getName();
     }
 
 //Refreshing PathTo
@@ -329,11 +331,11 @@ public class Graph {
         Node endNode = this.nodes.get(endNodeIndex);
         switch (choice) {
             case 0: {  //Dijkstra
-                dijkstraMain(startNode);
+                dijkstraSearch(startNode, endNode);
                 break;
             }
             case 1: { //Bellman-Ford
-                bellmanFordSearch(startNode);
+                bellman_FordSearch(startNode, endNode);
                 break;
             }
             case 2: { //Floyd-Warshall
@@ -344,7 +346,7 @@ public class Graph {
                 break;
 
         }
-        //pathWrite(endNode);
+        pathWrite(endNode);
     }
 
     /**
