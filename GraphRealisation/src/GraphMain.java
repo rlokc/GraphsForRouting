@@ -10,7 +10,7 @@ import java.io.FileNotFoundException;
 public class GraphMain {
 
     public static void main(String[] args) throws FileNotFoundException {
-        UndirectedGraph graph = new UndirectedGraph();
+        Graph graph = new Graph();
         //TODO: Get rid of that DIRTY DIRTY hack
         graph.generateGraph();
         graph.algorithmMaster();

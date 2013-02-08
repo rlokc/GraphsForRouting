@@ -12,10 +12,24 @@ public class Node {
     private ArrayList<Edge> adjacencies;
     public boolean isPassed = false;        //For searchers
     private int mark = Integer.MAX_VALUE;
+
+    public int getProxMark() {
+        return proxMark;
+    }
+
+    public void setProxMark(int proxMark) {
+        this.proxMark = proxMark;
+    }
+
+    private int proxMark = Integer.MAX_VALUE;
     private ArrayList<Node> pathTo = null;
 
     public ArrayList<Node> getPathTo() {
         return pathTo;
+    }
+
+    public void addToPathTo(Node node){
+        pathTo.add(node);
     }
 
     public void setPathTo(ArrayList<Node> pathTo) {
