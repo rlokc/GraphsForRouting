@@ -11,8 +11,7 @@ public class GraphMain {
 
     public static void main(String[] args) throws FileNotFoundException {
         Graph graph = new Graph();
-        //TODO: Get rid of that DIRTY DIRTY hack
-        graph.generateGraph();
+        graph.generateGraph();    //TODO: Embed in the constructor
         graph.algorithmMaster();
         graph.closeScanner();
     }

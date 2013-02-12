@@ -22,7 +22,7 @@ public class Graph {
     private ArrayList<Node> nodes;
     private ArrayList<Edge> edges = new ArrayList<Edge>();
     private Scanner scanner;
-//For Floyd-Warshall
+    //For Floyd-Warshall
     private ArrayList<ArrayList<Integer>> pathMatrix = new ArrayList<ArrayList<Integer>>();
     private ArrayList<ArrayList<Integer>> stepMatrix = new ArrayList<ArrayList<Integer>>();
 
@@ -101,14 +101,12 @@ public class Graph {
 
     /**
      * Base method for Dijkstra's methods of graph routing.
-     *
-     * @param startNode node as a start point of route
      */
     private void dijkstraSearch(Node currentNode, Node endNode) {
         currentNode.setMark(0);
         ArrayList<Node> pathTo = new ArrayList<Node>();
         //Setting initial path
-        pathRefresh(pathTo, currentNode);
+        pathRefresh(pathTo, currentNode, false);
         currentNode.isPassed = true;
         boolean isFinished = false;
 
@@ -122,7 +120,7 @@ public class Graph {
                         //Replacing if new mark is less
                         targetNode.setMark(comparableMark);
                         //Changing pathTo
-                        pathRefresh(currentNode.getPathTo(), endNode);
+                        pathRefresh(currentNode.getPathTo(), targetNode, false);
                     }
                 }
             }
@@ -136,14 +134,14 @@ public class Graph {
                     isFinished = false;
                     //Finding unpassed node with the least mark
                     if (checkNode.getMark() < nextNodeMark) {
-                        //and making it the next node
+                        //and making it the next node to be passed
                         currentNode = checkNode;
                         nextNodeMark = checkNode.getMark();
                     }
                 }
             }
         }
-        pathWrite(endNode);
+        pathWrite(endNode, false);
     }
 
     /**
@@ -155,7 +153,7 @@ public class Graph {
         startNode.setMark(0);
         ArrayList<Node> pathTo = new ArrayList<Node>();
         //Setting initial path
-        pathRefresh(pathTo, startNode);
+        pathRefresh(pathTo, startNode, false);
         for (int i = 0; i < nodeAmmount - 1; i++) {
             for (Edge edge : edges) {
                 Node aNode = edge.getStartNode();
@@ -166,12 +164,12 @@ public class Graph {
                         //Replacing if new mark is less
                         bNode.setMark(bMark);
                         //Changing pathTo
-                        pathRefresh(aNode.getPathTo(), bNode);
+                        pathRefresh(aNode.getPathTo(), bNode, false);
                     }
                 }
             }
         }
-        pathWrite(endNode);
+        pathWrite(endNode, false);
     }
 
     void floyd_WarshallSearch(int startNodeIndex, int endNodeIndex) {
@@ -226,18 +224,18 @@ public class Graph {
             }
             System.out.println();
         }
-        System.out.print(WarshallPathRecovery(startNodeIndex,endNodeIndex));
+        System.out.print(WarshallPathRecovery(startNodeIndex, endNodeIndex));
     }
-//Recovering paths from the matrix after Floyd-Warshall
-    String WarshallPathRecovery (int i,int j){
+
+    //Recovering paths from the matrix after Floyd-Warshall
+    String WarshallPathRecovery(int i, int j) {
         int k = stepMatrix.get(i).get(j);
-        if (pathMatrix.get(i).get(j)==-1)
+        if (pathMatrix.get(i).get(j) == -1)
             return "No path";
-        if (i==j){
+        if (i == j) {
             return nodes.get(i).getName();
-        }
-        else
-            return WarshallPathRecovery(i,k)+nodes.get(j).getName();
+        } else
+            return WarshallPathRecovery(i, k) + nodes.get(j).getName();
     }
 
 //Refreshing PathTo
@@ -249,44 +247,61 @@ public class Graph {
      * @param pathTo path that we are going to write as node parameters
      * @param node   node which path is being changed
      */
-    void pathRefresh(ArrayList<Node> pathTo, Node node) {
+    void pathRefresh(ArrayList<Node> pathTo, Node node, boolean isProxPath) {
         //Copying previous node's path
         ArrayList<Node> resultPath = (ArrayList<Node>) pathTo.clone();
         //Adding our node to it
         if (!pathTo.contains(node)) resultPath.add(node);
-        node.setPathTo(resultPath);
+        if (isProxPath)
+            node.setProxPathTo(resultPath);
+        else
+            node.setPathTo(resultPath);
     }
 
-    void pathWrite(Node targetNode) {
+    void pathWrite(Node targetNode, boolean isProxPath) {
+        if (!isProxPath) {             //Optimal path
 //Debug
-        System.out.println("YOUR BUNNY WROTE: ");
-        System.out.print(targetNode.getMark());
+            System.out.print(targetNode.getMark());
 //Writing path
-        System.out.println();
-        for (Node pathNode : targetNode.getPathTo()) {
-            System.out.print(pathNode.getName());
-            if (pathNode != targetNode) {
-                System.out.print(" -> ");
+            System.out.println();
+            for (Node pathNode : targetNode.getPathTo()) {
+                System.out.print(pathNode.getName());
+                if (pathNode != targetNode) {
+                    System.out.print(" -> ");
+                }
+            }
+        } else {                      //Shortest path
+//Debug
+            System.out.print(targetNode.getProxMark());
+//Writing path
+            System.out.println();
+            for (Node pathNode : targetNode.getProxPathTo()) {
+                System.out.print(pathNode.getName());
+                if (pathNode != targetNode) {
+                    System.out.print(" -> ");
+                }
             }
         }
     }
 
     //TODO: find a way to integrate inside the normal Dijkstra
-    void proximityDijkstra(Node startNode) {
-        startNode.setProxMark(0);
+    void proximityDijkstra(Node currentNode, Node endNode) {
+        currentNode.setProxMark(0);
+        ArrayList<Node> proxPathTo = new ArrayList<Node>();
+        pathRefresh(proxPathTo, currentNode,true);
         boolean isFinished = false;
-        startNode.isPassed = true;
-        Node currentNode = startNode;
+        currentNode.isPassed = true;
 
         while (!isFinished) {
             for (Edge tmpEdge : currentNode.getAdjacencies()) {
-                Node endNode = tmpEdge.getEndNode();
-                if (!endNode.isPassed) {
+                Node targetNode = tmpEdge.getEndNode();
+                if (!targetNode.isPassed) {
                     //Calculating mark
                     int comparableProxMark = currentNode.getProxMark() + 1;
-                    if (comparableProxMark < endNode.getProxMark()) {
+                    if (comparableProxMark < targetNode.getProxMark()) {
                         //Replacing if new mark is less
-                        endNode.setMark(comparableProxMark);
+                        targetNode.setMark(comparableProxMark);
+                        pathRefresh(currentNode.getProxPathTo(), targetNode,true);
                     }
                 }
             }
@@ -307,6 +322,7 @@ public class Graph {
                 }
             }
         }
+        pathWrite(endNode, true);
     }
 
     /**
@@ -339,14 +355,14 @@ public class Graph {
                 break;
             }
             case 2: { //Floyd-Warshall
-                floyd_WarshallSearch(startNodeIndex,endNodeIndex);
+                floyd_WarshallSearch(startNodeIndex, endNodeIndex);
                 break;
             }
             default:
                 break;
 
         }
-        pathWrite(endNode);
+        proximityDijkstra(startNode,endNode);
     }
 
     /**
