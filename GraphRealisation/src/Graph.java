@@ -58,7 +58,7 @@ public class Graph {
                 proxtmp.add(proxl);
                 tmp.add(l);
                 //Debug
-                System.out.print(l);
+                System.out.print(l+" ");
             }
             System.out.println();
             matrix.add(tmp);
@@ -84,14 +84,14 @@ public class Graph {
             System.out.println(nodes.get(i).getName());
         }
         for (int i = 0; i < nodeAmmount; i++) {                  //Looking through rows (the nodes)
-            Node tmpNode1 = nodes.get(i);
+            Node aNode = nodes.get(i);
             for (int j = 0; j < nodeAmmount; j++) {              //Looking through links with tmpNodes
-                Node comparableNode = nodes.get(j);
-                if (tmpNode1 != comparableNode) {                 //Checking if not comparing to itself, we don't need this
+                Node bNode = nodes.get(j);
+                if (aNode != bNode) {                 //Checking if not comparing to itself, we don't need this
                     int tmpWeigth = weightList.get(i).get(j);
                     if (tmpWeigth != -1) {
-                        Edge tmpEdge = new Edge(tmpNode1, comparableNode, tmpWeigth);    //Adding edges to both nodes
-                        tmpNode1.addAdjacency(tmpEdge);
+                        Edge tmpEdge = new Edge(aNode, bNode, tmpWeigth);    //Making a new edge and adding it to our node
+                        aNode.addAdjacency(tmpEdge);
                         edges.add(tmpEdge);
                     }
                 }
@@ -102,7 +102,7 @@ public class Graph {
     /**
      * Base method for Dijkstra's methods of graph routing.
      */
-    private void dijkstraSearch(Node currentNode, Node endNode) {
+    void dijkstraSearch(Node currentNode, Node endNode) {
         currentNode.setMark(0);
         ArrayList<Node> pathTo = new ArrayList<Node>();
         //Setting initial path
@@ -198,16 +198,14 @@ public class Graph {
                         continue;
                     int curWeight = pathMatrix.get(i).get(j);
                     int compWeight = pathMatrix.get(i).get(k) + pathMatrix.get(k).get(j);
-                    if (curWeight == -1) {
-                        pathMatrix.get(i).set(j, compWeight);
-                        stepMatrix.get(i).set(j, k);
-                    } else if (compWeight < curWeight) {
+                    if ((curWeight == -1) || (compWeight < curWeight)) {
                         pathMatrix.get(i).set(j, compWeight);
                         stepMatrix.get(i).set(j, k);
                     }
                 }
         //Debug
         //Printing finished matrix
+        System.out.println("\nPath matrix:");
         for (int i = 0; i < nodeAmmount; i++) {
             for (int j = 0; j < nodeAmmount; j++) {
                 System.out.print(pathMatrix.get(i).get(j));
@@ -216,7 +214,7 @@ public class Graph {
             System.out.println();
         }
         //Printing stepmatrix
-        System.out.println();
+        System.out.println("\nStep matrix:");
         for (int i = 0; i < nodeAmmount; i++) {
             for (int j = 0; j < nodeAmmount; j++) {
                 System.out.print(stepMatrix.get(i).get(j));
@@ -232,9 +230,9 @@ public class Graph {
         int k = stepMatrix.get(i).get(j);
         if (pathMatrix.get(i).get(j) == -1)
             return "No path";
-        if (i == j) {
+        if (i == j)
             return nodes.get(i).getName();
-        } else
+        else
             return WarshallPathRecovery(i, k) + nodes.get(j).getName();
     }
 
@@ -261,7 +259,7 @@ public class Graph {
     void pathWrite(Node targetNode, boolean isProxPath) {
         if (!isProxPath) {             //Optimal path
 //Debug
-            System.out.print(targetNode.getMark());
+            System.out.print("Target node mark is " + targetNode.getMark());
 //Writing path
             System.out.println();
             for (Node pathNode : targetNode.getPathTo()) {
@@ -285,6 +283,7 @@ public class Graph {
     }
 
     //TODO: find a way to integrate inside the normal Dijkstra
+    //TODO:IT'S NOT WORKING AS OF NOW, DON'T BOTHER LOOKING AT IT
     void proximityDijkstra(Node currentNode, Node endNode) {
         currentNode.setProxMark(0);
         ArrayList<Node> proxPathTo = new ArrayList<Node>();
@@ -341,7 +340,7 @@ public class Graph {
         int startNodeIndex = scanner.nextInt();
         int endNodeIndex = scanner.nextInt();
         //Verbose debug
-        System.out.print(startNodeIndex);
+        System.out.print(startNodeIndex + " ");
         System.out.println(endNodeIndex);
         Node startNode = this.nodes.get(startNodeIndex);
         Node endNode = this.nodes.get(endNodeIndex);
@@ -362,7 +361,7 @@ public class Graph {
                 break;
 
         }
-        proximityDijkstra(startNode,endNode);
+//        proximityDijkstra(startNode,endNode);
     }
 
     /**
